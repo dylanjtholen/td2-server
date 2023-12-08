@@ -9,8 +9,8 @@ function roundEnd(game) {
     game.enemyCooldown = 0;
     game.roundIndex = 0;
     game.round++;
-    for (let player of game.players) {
-    player.money += Math.ceil((100 + game.round * 5) / Math.ceil(game.players.length / 2))
+    for (const [key, value] of Object.entries(game.players)) {
+    value.money += Math.ceil((100 + game.round * 5) / Math.ceil(Object.entries(game.players).length / 2))
     }
       game.projectiles = []
     for (let i in game.towers) {
@@ -27,7 +27,7 @@ function roundEnd(game) {
           return
       }
       game.enemyCooldown = 60
-      game.enemies.push(new enemy(rounds[game.round][game.roundIndex]))
+      game.enemies.push(new enemy(rounds[game.round][game.roundIndex], '', game))
       game.roundIndex++
       
   }

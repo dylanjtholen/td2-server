@@ -1,4 +1,5 @@
 const { distance, towerConstants, upgrades } = require('../utils.js')
+const projectile = require('./projectile.js')
 
 class tower {
     constructor(type, x, y, owner) {
@@ -30,7 +31,7 @@ class tower {
             this.cooldown--
         } else {
             if (this.type == 'sniper') {
-                game.players[owner].money += enemy.health <= this.constants.damage ? enemy.health : this.constants.damage
+                game.players[this.owner].money += enemy.health <= this.constants.damage ? enemy.health : this.constants.damage
                 enemy.health -= this.upgrades[0] && Math.random() * 10 <= 2 ? this.constants.damage * 3 : this.constants.damage
                 enemy.stun = this.upgrades[4] && enemy.stun <= 0 ? 30 : 0
                 if (this.upgrades[1]) {
@@ -39,7 +40,7 @@ class tower {
                     game.projectiles.push(new projectile('frag', enemy.x, enemy.y, undefined, undefined, i * (Math.PI / 4), this))
                     }
                 }
-                if (enemy.health <= 0) enemy.delete()
+                if (enemy.health <= 0) enemy.delete(game)
                 if (this.upgrades[6]) {
                     for (let i = 1; i < 4; i++) {
                         let enemy = game.enemies[enemyIndex + i]
@@ -47,7 +48,7 @@ class tower {
                             enemy = game.enemies[enemyIndex - i]
                             if (!enemy) {break}
                         }
-                        game.players[owner].money += enemy.health <= this.constants.damage ? enemy.health : this.constants.damage
+                        game.players[this.owner].money += enemy.health <= this.constants.damage ? enemy.health : this.constants.damage
                         enemy.health -= this.upgrades[0] && Math.random() * 10 <= 2 ? this.constants.damage * 3 : this.constants.damage
                         enemy.stun = this.upgrades[4] && enemy.stun <= 0 ? 30 : 0
                         for (let i = 1; i < 9; i++) {

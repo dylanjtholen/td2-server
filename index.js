@@ -1,16 +1,18 @@
 const httpServer = require("http").createServer()
 const { initGame, updateGame } = require("./game")
-const {checkPlacement, towerConstants} = require("./utils")
+const {checkPlacement, towerConstants, upgrades} = require("./utils")
 let tower = require("./classes/tower.js")
 let enemy = require("./classes/enemy.js")
 let projectile = require("./classes/projectile")
 const rounds = require("./classes/rounds")
+const { info } = require("console")
 const io = require("socket.io")(httpServer, {
     cors: {
-      origin: "https://laughing-train-p5wx56rqgjq3rpx7-5504.app.github.dev",
+      origin: "https://laughing-train-p5wx56rqgjq3rpx7-5505.app.github.dev",
       methods: ["GET", "POST"]
     }
   })
+  console.log("Server started")
 
 function makeid(length) {
   let characters = 'abcdefghijklmnopqrstuvwxyz'
@@ -19,6 +21,15 @@ function makeid(length) {
     result += characters.charAt(Math.floor(Math.random() * characters.length))
   }
   return result
+}
+
+function validateusername(username) {
+  if (username.length > 20 || username.length < 1) return false
+  let characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_'
+  for (let i = 0; i < username.length; i++) {
+    if (!characters.includes(username.charAt(i))) return false
+  }
+  return true
 }
 
 const socketrooms = io.of("/").adapter.rooms
@@ -30,24 +41,33 @@ const rooms = {}
 const state = {}
 
 io.on('connection', (client) => {
-  client.on('joinroom', (roomname) => {
-    if (!socketrooms.has(roomname) || state[roomname].started) {
+  client.on('joinroom', (info) => {
+    if (!validateusername(info.username)) {
+      client.emit('invalidusername')
+      return
+    }
+    if (!socketrooms.has(info.roomname) || state[info.roomname].started) {
       client.emit('roomnotfound')
       return
     }
-    if (socketrooms.get(roomname).size >= maxplayers) {
+    if (socketrooms.get(info.roomname).size >= maxplayers) {
       client.emit('roomfull')
       return
     }
 
-    client.join(roomname)
-    rooms[client.id] = roomname
-    state[roomname].players[socketrooms.get(roomname).size] = {money: 250}
-    client.playerid = socketrooms.get(roomname).size
-    client.emit('joinedroom', {roomname: roomname, playerid: socketrooms.get(roomname).size})
+    client.join(info.roomname)
+    rooms[client.id] = info.roomname
+    state[info.roomname].players[socketrooms.get(info.roomname).size] = {money: 250, username: info.username}
+    client.playerid = socketrooms.get(info.roomname).size
+    client.emit('joinedroom', {roomname: info.roomname, playerid: socketrooms.get(info.roomname).size, players: state[info.roomname].players})
+    io.to(info.roomname).emit('playerjoined', {players: state[info.roomname].players, roomname: info.roomname})
   })
 
-  client.on('createroom', () => {
+  client.on('createroom', (info) => {
+    if (!validateusername(info.username)) {
+      client.emit('invalidusername')
+      return
+    }
     let roomname = makeid(5)
     while (socketrooms.has(roomname)) {
       roomname = makeid(5)
@@ -55,8 +75,9 @@ io.on('connection', (client) => {
     client.join(roomname)
     rooms[client.id] = roomname
     client.playerid = socketrooms.get(roomname).size
-    client.emit('joinedroom', {roomname: roomname, playerid: socketrooms.get(roomname).size})
     state[roomname] = initGame()
+    state[roomname].players[1] = {money: 250, username: info.username + '(host)'}
+    client.emit('joinedroom', {roomname: roomname, playerid: socketrooms.get(roomname).size, players: state[roomname].players})
   })
   client.on('startgame', () => {
     if (!rooms[client.id]) return
@@ -80,6 +101,28 @@ io.on('connection', (client) => {
       gamestate.towers.push(new tower(towerinfo.type, towerinfo.x, towerinfo.y, client.playerid))
       gamestate.players[client.playerid].money -= towerConstants[towerinfo.type].cost
     }
+  })
+  client.on('buyupgrade', (info) => {
+    if (!rooms[client.id]) return
+    let gamestate = state[rooms[client.id]]
+    let index = info.index
+    let tower
+    for (let i in gamestate.towers) {
+      let tow = gamestate.towers[i]
+      if (tow.x == info.tower.x && tow.y == info.tower.y && tow.type == info.tower.type && tow.owner == client.playerid) {
+        tower = tow
+        break
+      }
+    }
+    if (!tower) return
+    console.log(tower.x, tower.y, tower.type, tower.owner)
+    let upgrade = upgrades[tower.type][info.index-1]
+    if (upgrade.cost > gamestate.players[client.playerid].money) return
+    if ((index-4>-1 && !tower.upgrades[index-4]) || (index == 7 && (!tower.upgrades[index-2] || !tower.upgrades[index-3] || !tower.upgrades[index-4]))) return
+    gamestate.players[client.playerid].money -= upgrade.cost
+    tower.upgrades[index-1] = upgrade
+    tower.updateUpgrades()
+    client.emit('upgradebought', tower)
   })
   client.on('selltower', (towerinfo) => {
     if (!rooms[client.id]) return
