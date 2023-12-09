@@ -8,7 +8,7 @@ const rounds = require("./classes/rounds")
 const { info } = require("console")
 const io = require("socket.io")(httpServer, {
     cors: {
-      origin: "https://laughing-train-p5wx56rqgjq3rpx7-5505.app.github.dev",
+      origin: true,
       methods: ["GET", "POST"]
     }
   })
@@ -33,7 +33,6 @@ function validateusername(username) {
 }
 
 const socketrooms = io.of("/").adapter.rooms
-const socketsids = io.of("/").adapter.sids
 
 const maxplayers = 4
 

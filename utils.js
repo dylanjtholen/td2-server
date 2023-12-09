@@ -93,6 +93,17 @@ return (dx*dx+dy*dy<=(circle.r*circle.r));
 
 }
 
+function circlecirclecollision(circle1, circle2) {
+        let dx = circle1.x - circle2.x
+        let dy = circle1.y - circle2.y
+        let distance = Math.sqrt(dx * dx + dy * dy)
+        if (distance < circle1.r + circle2.r) {
+            return true
+        } else {
+            return false
+        }
+}
+
 function distance(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
 }

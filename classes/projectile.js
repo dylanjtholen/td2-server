@@ -1,4 +1,4 @@
-const { rectcirclecollision, towerConstants } = require('../utils.js')
+const { circlecirclecollision, towerConstants } = require('../utils.js')
 
 class projectile {
     constructor(type, x, y, targetx, targety, angle, parent) {
@@ -29,7 +29,7 @@ class projectile {
         }
         for (let i in game.enemies) {
         let enemy = game.enemies[i]
-        if (rectcirclecollision({x: this.x, y: this.y, w: this.width, h: this.height}, {x: enemy.x - 25, y: enemy.y - 25, r: 50}) && this.enemyexclude != enemy) {
+        if (circlecirclecollision({x: this.x, y: this.y, r: this.width}, {x: enemy.x - 25, y: enemy.y - 25, r: 50}) && this.enemyexclude != enemy) {
             game.players[this.parent.owner].money += enemy.health <= this.constants.damage ? enemy.health : this.constants.damage
             let temphealth = this.health
             this.health -= enemy.health
