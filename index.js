@@ -59,7 +59,7 @@ io.on('connection', (client) => {
     state[info.roomname].players[socketrooms.get(info.roomname).size] = {money: 250, username: info.username}
     client.playerid = socketrooms.get(info.roomname).size
     client.emit('joinedroom', {roomname: info.roomname, playerid: socketrooms.get(info.roomname).size, players: state[info.roomname].players})
-    io.to(info.roomname).emit('playerjoined', {players: state[info.roomname].players, roomname: info.roomname})
+    io.to(info.roomname).emit('roomupdate', {players: state[info.roomname].players, roomname: info.roomname, state: state[info.roomname]})
   })
 
   client.on('createroom', (info) => {
@@ -73,10 +73,24 @@ io.on('connection', (client) => {
     }
     client.join(roomname)
     rooms[client.id] = roomname
-    client.playerid = socketrooms.get(roomname).size
+    client.playerid = 1
     state[roomname] = initGame()
     state[roomname].players[1] = {money: 250, username: info.username + '(host)'}
     client.emit('joinedroom', {roomname: roomname, playerid: socketrooms.get(roomname).size, players: state[roomname].players})
+  })
+  client.on('previousmap', () => {
+    if (!rooms[client.id] || client.playerid != 1) return
+    let roomname = rooms[client.id]
+    let gamestate = state[roomname]
+    gamestate.map = gamestate.map == 'easy' ? 'hard' : gamestate.map == 'hard' ? 'medium' : 'easy'
+    io.to(roomname).emit('roomupdate', {players: state[roomname].players, roomname: roomname, state: gamestate})
+  })
+  client.on('nextmap', () => {
+    if (!rooms[client.id] || client.playerid != 1) return
+    let roomname = rooms[client.id]
+    let gamestate = state[roomname]
+    gamestate.map = gamestate.map == 'easy' ? 'medium' : gamestate.map == 'medium' ? 'hard' : 'easy'
+    io.to(roomname).emit('roomupdate', {players: state[roomname].players, roomname: roomname, state: gamestate})
   })
   client.on('startgame', () => {
     if (!rooms[client.id]) return
