@@ -114,6 +114,7 @@ module.exports = {
     towerConstants,
     distance,
     rectcirclecollision,
+    circlecirclecollision,
     checkPlacement,
     upgrades,
     maps
