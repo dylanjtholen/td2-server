@@ -81,7 +81,7 @@ io.on('connection', (client) => {
       return
     }
     let roomname = makeid(5)
-    while (rooms.has(roomname)) {
+    while (socketrooms.has(roomname)) {
       roomname = makeid(5)
     }
     client.join(roomname)
@@ -124,13 +124,14 @@ io.on('connection', (client) => {
     let roomname = rooms[client.id]
     let gamestate = state[roomname]
     let player = gamestate.players[client.playerid]
+    if (!player) return
     if (player.money >= towerConstants[towerinfo.type].cost && checkPlacement(towerinfo.x, towerinfo.y, towerConstants[towerinfo.type].size, gamestate)) {
       gamestate.towers.push(new tower(towerinfo.type, towerinfo.x, towerinfo.y, client.playerid))
       gamestate.players[client.playerid].money -= towerConstants[towerinfo.type].cost
     }
   })
   client.on('buyupgrade', (info) => {
-    if (!validaterequest, ['tower', 'index']) return
+    if (!validaterequest(info, ['tower', 'index'])) return
     if (!validaterequest(info.tower, ['x', 'y', 'type'])) return
     if (!rooms[client.id]) return
     let gamestate = state[rooms[client.id]]
