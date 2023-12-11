@@ -159,6 +159,11 @@ io.on('connection', (client) => {
     let roomname = rooms[client.id]
     state[roomname].autostart = !state[roomname].autostart
   })
+  client.on('freeplay', () => {
+    if (!rooms[client.id]) return
+    let roomname = rooms[client.id]
+    state[roomname].freeplay = true
+  })
 })
 
 function startInterval(roomname) {

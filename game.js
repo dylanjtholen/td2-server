@@ -18,7 +18,23 @@ function roundEnd(game) {
     }
   }
 
+  function generateFreeplayRound(game) {
+    return Math.floor((game.round + Math.random() * 3) ** 1.4)
+    }
+
   function spawnEnemies(game) {
+    if (game.freeplay) {
+        if (game.enemies.length <= 0 && game.roundIndex >= 20) {roundEnd(game);return}
+        if (!game.roundRunning || game.roundIndex >= 20) return
+        if (game.enemyCooldown > 0 && game.enemies.length > 0) {
+          game.enemyCooldown--
+          return
+        }
+        game.enemyCooldown = 60
+        game.enemies.push(new enemy(generateFreeplayRound(game)))
+        game.roundIndex++
+        return
+      }
       if (game.round > rounds.length - 1) {game.win = true; return}
       if (game.enemies.length <= 0 && game.roundIndex >= rounds[game.round].length) {roundEnd(game);return}
       if (!game.roundRunning || game.roundIndex >= rounds[game.round].length) return
