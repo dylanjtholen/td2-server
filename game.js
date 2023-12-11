@@ -31,11 +31,11 @@ function roundEnd(game) {
           return
         }
         game.enemyCooldown = 60
-        game.enemies.push(new enemy(generateFreeplayRound(game)))
+        game.enemies.push(new enemy(generateFreeplayRound(game), '', game))
         game.roundIndex++
         return
       }
-      if (game.round > rounds.length - 1) {game.win = true; return}
+      if (game.round > rounds.length - 1) {game.win = true; game.roundrunning = false; return}
       if (game.enemies.length <= 0 && game.roundIndex >= rounds[game.round].length) {roundEnd(game);return}
       if (!game.roundRunning || game.roundIndex >= rounds[game.round].length) return
       if (game.enemyCooldown > 0 && game.enemies.length > 0) {
@@ -63,7 +63,9 @@ function initGame() {
         autostart: false,
         enemyCooldown: 0,
         map: 'easy',
-        enemyidcounter: 0
+        enemyidcounter: 0,
+        freeplay: false,
+        win: false
         }
 }
 

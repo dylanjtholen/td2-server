@@ -10,6 +10,10 @@ const io = require("socket.io")(httpServer, {
     cors: {
       origin: true,
       methods: ["GET", "POST"]
+    },
+    connectionStateRecovery: {
+      maxDisconnectionDuration: 30 * 1000,
+      skipMiddlewares: true,
     }
   })
   console.log("Server started")
@@ -21,6 +25,13 @@ function makeid(length) {
     result += characters.charAt(Math.floor(Math.random() * characters.length))
   }
   return result
+}
+
+function validaterequest(request, params) {
+  for (let i in params) {
+    if (!request[params[i]]) return false
+  }
+  return true
 }
 
 function validateusername(username) {
@@ -41,6 +52,7 @@ const state = {}
 
 io.on('connection', (client) => {
   client.on('joinroom', (info) => {
+    if (!validaterequest(info, ['username', 'roomname'])) return
     if (!validateusername(info.username)) {
       client.emit('invalidusername')
       return
@@ -63,12 +75,13 @@ io.on('connection', (client) => {
   })
 
   client.on('createroom', (info) => {
+    if (!validaterequest(info, ['username'])) return
     if (!validateusername(info.username)) {
       client.emit('invalidusername')
       return
     }
     let roomname = makeid(5)
-    while (socketrooms.has(roomname)) {
+    while (rooms.has(roomname)) {
       roomname = makeid(5)
     }
     client.join(roomname)
@@ -106,6 +119,7 @@ io.on('connection', (client) => {
     delete rooms[client.id]
   })
   client.on('placetower', (towerinfo) => {
+    if (!validaterequest(towerinfo, ['x', 'y', 'type'])) return
     if (!rooms[client.id]) return
     let roomname = rooms[client.id]
     let gamestate = state[roomname]
@@ -116,6 +130,8 @@ io.on('connection', (client) => {
     }
   })
   client.on('buyupgrade', (info) => {
+    if (!validaterequest, ['tower', 'index']) return
+    if (!validaterequest(info.tower, ['x', 'y', 'type'])) return
     if (!rooms[client.id]) return
     let gamestate = state[rooms[client.id]]
     let index = info.index
@@ -137,6 +153,7 @@ io.on('connection', (client) => {
     client.emit('upgradebought', tower)
   })
   client.on('selltower', (towerinfo) => {
+    if (!validaterequest(towerinfo, ['x', 'y'])) return
     if (!rooms[client.id]) return
     let roomname = rooms[client.id]
     let gamestate = state[roomname]
@@ -162,6 +179,7 @@ io.on('connection', (client) => {
     if (!rooms[client.id]) return
     let roomname = rooms[client.id]
     state[roomname].freeplay = true
+    io.to(roomname).emit('freeplaystarted')
   })
 })
 
