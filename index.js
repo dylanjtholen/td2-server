@@ -188,8 +188,8 @@ io.on('connection', (client) => {
     let roomname = rooms[client.id]
     let gamestate = state[roomname]
     if (info.player < 0 || info.player > gamestate.players.length || info.player == client.playerid) return
-    gamestate.players[client.playerid].money -= (info.amount > gamestate.players[client.playerid].money ? gamestate.players[client.playerid].money : info.amount)
     gamestate.players[info.player].money += (info.amount > gamestate.players[client.playerid].money ? gamestate.players[client.playerid].money : info.amount)
+    gamestate.players[client.playerid].money -= (info.amount > gamestate.players[client.playerid].money ? gamestate.players[client.playerid].money : info.amount)
   })
 })
 
