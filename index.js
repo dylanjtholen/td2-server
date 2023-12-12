@@ -52,15 +52,15 @@ const state = {}
 
 io.on('connection', (client) => {
   client.on('joinroom', (info) => {
-    if (!validaterequest(info, ['username', 'roomname'])) return
-    if (!validateusername(info.username)) {
-      client.emit('invalidusername')
-      return
-    }
     if (!socketrooms.has(info.roomname) || state[info.roomname].started) {
       client.emit('roomnotfound')
       return
     }
+    if (!validateusername(info.username)) {
+      client.emit('invalidusername')
+      return
+    }
+    if (!validaterequest(info, ['username', 'roomname'])) return
     if (socketrooms.get(info.roomname).size >= maxplayers) {
       client.emit('roomfull')
       return
@@ -75,11 +75,11 @@ io.on('connection', (client) => {
   })
 
   client.on('createroom', (info) => {
-    if (!validaterequest(info, ['username'])) return
     if (!validateusername(info.username)) {
       client.emit('invalidusername')
       return
     }
+    if (!validaterequest(info, ['username'])) return
     let roomname = makeid(5)
     while (socketrooms.has(roomname)) {
       roomname = makeid(5)
