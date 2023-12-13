@@ -1,6 +1,6 @@
 const httpServer = require("http").createServer()
 const { initGame, updateGame } = require("./game")
-const {checkPlacement, towerConstants, upgrades} = require("./utils")
+const {checkPlacement, towerConstants, upgrades, secretroomnames} = require("./utils")
 let tower = require("./classes/tower.js")
 let enemy = require("./classes/enemy.js")
 let projectile = require("./classes/projectile")
@@ -19,6 +19,9 @@ const io = require("socket.io")(httpServer, {
   console.log("Server started")
 
 function makeid(length) {
+  if (Math.floor(Math.random() * 10) == 1) {
+    return secretroomnames[Math.floor(Math.random() * secretroomnames.length)]
+  }
   let characters = 'abcdefghijklmnopqrstuvwxyz'
   let result = ''
   for (let i = 0; i < length; i++) {
