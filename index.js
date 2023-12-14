@@ -111,7 +111,7 @@ io.on('connection', (client) => {
   client.on('startgame', () => {
     if (!rooms[client.id]) return
     let roomname = rooms[client.id]
-    if (socketrooms.get(roomname).size < 1) {client.emit('notenoughplayers'); return}
+    if (socketrooms.get(roomname).size < 2) {client.emit('notenoughplayers'); return}
     io.to(roomname).emit('gamestarted')
     startInterval(roomname)
   })
