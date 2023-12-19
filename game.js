@@ -35,7 +35,7 @@ function roundEnd(game) {
         game.roundIndex++
         return
       }
-      if (game.round > rounds.length - 1) {game.win = true; game.roundrunning = false; return}
+      if (game.round > rounds.length - 1 && game.health > 0) {game.win = true; game.roundrunning = false; return}
       if (game.enemies.length <= 0 && game.roundIndex >= rounds[game.round].length) {roundEnd(game);return}
       if (!game.roundRunning || game.roundIndex >= rounds[game.round].length) return
       if (game.enemyCooldown > 0 && game.enemies.length > 0) {
