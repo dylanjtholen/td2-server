@@ -2,7 +2,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "nodemon": "^3.0.2",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.8.0"
   },
   "scripts": {
     "test": "nodemon index.js",
