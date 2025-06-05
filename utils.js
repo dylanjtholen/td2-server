@@ -42,19 +42,19 @@ const maps = {
 
 const upgrades = {
     basic: [
-        {name: 'Faster shooting', cost: 500, description: 'shoots twice as fast'}, {name: 'Double shot', cost: 1500, description: 'shoots 2 at a time'}, {name: '+3 damage', cost: 1000, description: 'adds 3 damage, for a total of 5'},
-        {name: 'Longer range', cost: 2000, description: 'doubles range'}, {name: 'Triple shot', cost: 2500, description: 'shoots 3 at a time'}, {name: '+5 damage', cost: 2000, description: 'adds 5 damage, for a total of 10'},
+        {name: 'Faster shooting', cost: 250, description: 'shoots twice as fast'}, {name: 'Double shot', cost: 1000, description: 'shoots 2 at a time'}, {name: '+3 damage', cost: 750, description: 'adds 3 damage, for a total of 5'},
+        {name: 'Longer range', cost: 1000, description: 'doubles range'}, {name: 'Triple shot', cost: 2000, description: 'shoots 3 at a time'}, {name: '+5 damage', cost: 1500, description: 'adds 5 damage, for a total of 10'},
         {name: 'Shotgun', cost: 6000, description: 'shoots 5 at a time'}
     ],
     sniper: [
-        {name: 'Critical hit', cost: 600, description: 'has a 20% chance to triple damage'}, {name: 'Frag bullets', cost: 2000, description: 'bullets explode into fragments'}, {name: '+6 damage', cost: 1500, description: '+6 damage, for a total of 10'},
-        {name: 'Faster shooting', cost: 2000, description: 'shoots twice as fast'}, {name: 'Stun', cost: 3500, description: 'stuns enemies for a short time'}, {name: '+10 damage', cost: 2500, description: '+10 damage, for a total of 20'},
+        {name: 'Critical hit', cost: 300, description: 'has a 20% chance to triple damage'}, {name: 'Frag bullets', cost: 750, description: 'bullets explode into fragments'}, {name: '+6 damage', cost: 1000, description: '+6 damage, for a total of 10'},
+        {name: 'Faster shooting', cost: 1500, description: 'shoots twice as fast'}, {name: 'Stun', cost: 3500, description: 'stuns enemies for a short time'}, {name: '+10 damage', cost: 2000, description: '+10 damage, for a total of 20'},
         {name: 'Ricochet', cost: 8000, description: 'bullets bounce from enemy to enemy'}
     ],
     flamethrower: [
-        {name: 'Faster shooting', cost: 1500, description: 'shoots twice as fast'}, {name: 'Burning', cost: 3000, description: 'enemies take burning damage'}, {name: '+3 damage', cost: 2000, description: 'adds 3 damage, for a total of 4'},
-        {name: 'Longer range', cost: 4000, description: 'triples range'}, {name: 'Intense burning', cost: 6000, description: 'enemies on fire move slower'}, {name: '+6 damage', cost: 3000, description: '+6 damage, for a total of 10'},
-        {name: 'Inferno', cost: 10000, description: 'shoots a wide cone of flames'}
+        {name: 'Faster shooting', cost: 750, description: 'shoots twice as fast'}, {name: 'Burning', cost: 1000, description: 'enemies take burning damage'}, {name: '+3 damage', cost: 1000, description: 'adds 3 damage, for a total of 4'},
+        {name: 'Longer range', cost: 2000, description: 'triples range'}, {name: 'Intense burning', cost: 1500, description: 'enemies on fire move slower'}, {name: '+6 damage', cost: 2000, description: '+6 damage, for a total of 10'},
+        {name: 'Inferno', cost: 8000, description: 'shoots a wide cone of flames'}
     ]
 }
 
