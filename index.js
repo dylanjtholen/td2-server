@@ -191,7 +191,7 @@ io.on('connection', (client) => {
 	client.on('sendmoney', (info) => {
 		if (!validaterequest(info, ['player', 'amount'])) return;
 		if (!rooms[client.id]) return;
-		if (!Number(info.amount) || info.amount <= 0) return;
+		if (!Number(info.amount) || info.amount <= 0 || isNaN(info.amount) || Math.round(info.amount) != info.amount) return;
 		let roomname = rooms[client.id];
 		let gamestate = state[roomname];
 		if (info.player < 0 || info.player > gamestate.players.length || info.player == client.playerid) return;
