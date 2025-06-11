@@ -153,7 +153,7 @@ io.on('connection', (client) => {
 		if (!tower) return;
 		let upgrade = upgrades[tower.type][info.index - 1];
 		if (upgrade.cost > gamestate.players[client.playerid].money) return;
-		if ((index - 4 > -1 && !tower.upgrades[index - 4]) || (index == 7 && (!tower.upgrades[index - 2] || !tower.upgrades[index - 3] || !tower.upgrades[index - 4]))) return;
+		if ((index - 4 > -1 && !tower.upgrades[index - 4]) || (index == 7 && (!tower.upgrades[index - 2] || !tower.upgrades[index - 3] || !tower.upgrades[index - 4])) || tower.upgrades[index]) return;
 		gamestate.players[client.playerid].money -= upgrade.cost;
 		tower.upgrades[index - 1] = upgrade;
 		tower.updateUpgrades();
